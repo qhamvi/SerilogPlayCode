@@ -1,7 +1,7 @@
 {
   "AllowedHosts": "*",
   "Serilog": {
-    "Using": [],
+    "Using": [ "Serilog.Enrichers.Environment", "Serilog.Enrichers.Process", "Serilog.Enrichers.Thread" ],
     "MinimumLevel": {
       "Default": "Information",
       "Override": {
@@ -10,8 +10,28 @@
       }
     },
     "Enrich": [ "FromLogContext", "WithMachineName", "WithProcessId", "WithThreadId" ],
+
     "WriteTo": [
-      { "Name": "Console" }
+      { "Name": "Console" },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "C:\\ViVi\\CodeLearn\\SerilogPlayCode\\SerilogPlayCode\\Logs\\logging.txt",
+          "outputTemplate": "{Timestamp:G} {Message}{NewLine:1}{Exception:1}"
+        }
+      },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "C:\\ViVi\\CodeLearn\\SerilogPlayCode\\SerilogPlayCode\\Logs\\logging.json",
+          "formatter": "Serilog.Formatting.Json.JsonFormatter, Serilog"
+        }
+      },
+      {
+        "Name": "Seq",
+        "Application": "SerilogPlayCode",
+        "Args": { "ServerUrl": "http://localhost:8001" }
+      }
     ]
   }
 }

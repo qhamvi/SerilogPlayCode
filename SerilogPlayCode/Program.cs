@@ -14,13 +14,14 @@ namespace SerilogPlayCode
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("logging.json")
                 .Build();
             var configurationAssemblies = new[]
             {
                 typeof(ConsoleLoggerConfigurationExtensions).Assembly,
                 typeof(FileLoggerConfigurationExtensions).Assembly,
                 typeof(LoggerConfigurationExtensions).Assembly,
+                typeof(Program).Assembly
             };
             var options = new ConfigurationReaderOptions(configurationAssemblies);
             
@@ -30,6 +31,7 @@ namespace SerilogPlayCode
                 .Enrich.WithMachineName()
                 .Enrich.WithProcessId()
                 .Enrich.WithThreadId()
+                .WriteTo.Seq("http://localhost:8001")
                 .CreateLogger();
             try
             {
@@ -39,7 +41,7 @@ namespace SerilogPlayCode
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "Application failed to start conrrectly");
+                Log.Fatal(ex, "Application failed to start correctly");
             }
             finally
             {
